@@ -1,0 +1,63 @@
+	Ofile v1	- 	Felipe Astroza
+
+ Ofile nace como una respuesta rapida a la base de datos de un BOT.
+	Ahora Orixfile se define como un gestor de elementos almacenados
+ en un fichero y accedido mediantes paginas obtenidas con mmap() sincronizadas.
+ Los datos son almacenados de manera lineal.
+
+*****	o_file *o_open(const char *file, const char *mode);
+
+	file: Ruta del Orixfile
+	mode: 'r'=read 'w'=write. Por defecto 'r' esta presente.
+	return: estructura de un Orixfile. Memoria conseguida con malloc()
+	
+*****	int o_close(o_file *of);
+
+	of: Orixfile que desea cerrar
+
+*****	int o_write_entry(o_file *of, const char *name, void *data, size_t size);
+
+	of: Orixfile
+	name: Nombre de la entrada
+	data: Direccion de la memoria con la informacion a escribir
+	size: Tamaño de la informacion
+
+*****	int o_read_entry(o_file *of, const char *name, void *buf, size_t len);
+
+	of: Orixfile
+	name: Nombre de entrada
+	buf: Direccion de buffer de salida
+	len: Longitud de buffer o limite
+
+*****	int o_delete_entry(o_file *of, const char *name);
+
+	of: Orixfile
+	name: Nombre de la entrada
+
+*****	int o_rename_entry(o_file *of, const char *old, const char *new);
+
+	of: Orixfile
+	old: Nombre de la entrada
+	new: Nuevo nombre
+
+*****	off_t o_get_offset(o_file *of, const char *name);
+
+	of: Orixfile
+	name: Nombre de la entrada
+	return: Offset de la entrada
+
+*****	void *o_access_to_mem(o_file *of, off_t offset, size_t *size);
+
+	of: Orixfile
+	offset: Offset de la entrada
+	size: Puntero donde se almacenara opcionalmente el tamaño de la entrada
+	return: Direccion con los datos almacenados de la entrada
+
+*****	int o_touch_entry(o_file *of, const char *name);
+
+	of: Orixfile
+	name: Nombre de entrada
+
+*****	void o_clear_up(o_file *);
+
+	of: Orixfile
