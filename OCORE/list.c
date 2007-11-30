@@ -3,6 +3,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include <list.h>
 
@@ -194,34 +195,32 @@ int ocore_list_destroy(ocore_list *list)
 	return 1;
 }
 
-/* ocore_list_remove_node(): Elimina un nodo especifico 
+/* ocore_list_remove_node(): Elimina un nodo especifico
  * Nota: El comportamiento es impredecible si <opq> no pertenece a la lista.
  */
-int ocore_list_remove_node(ocore_list *list, ocore_opaque_one opq)
+void ocore_list_remove_node(ocore_list *list, ocore_list_node *node)
 {
-	if(!opq)
-		return 0;
+	assert(list != NULL);
+	assert(node != NULL);
 
-	list->current = (ocore_list_node *)opq;
+	list->current = node;
 	free(_ocore_list_remove(list));
-
-	return 1;
 }
 
-/* ocore_list_get_opaque_node(): Retorna puntero opaco del current node
- */ 
-ocore_opaque_one ocore_list_get_opaque_node(ocore_list *list)
+/* ocore_list_get_current_ptr(): Consigue la direccion del nodo actual.
+*/
+inline ocore_list_node *ocore_list_get_current_ptr(ocore_list *list)
 {
-	if(list)
-		return (ocore_opaque_one)list->current;
+	assert(list != NULL);
 
-	return NULL;
+	return list->current;
 }
 
-void ocore_list_set_current(ocore_list *list, ocore_opaque_one opq)
+inline void ocore_list_set_current(ocore_list *list, ocore_list_node *node)
 {
-	if(list && opq)
-		list->current = (ocore_list_node *)opq;
+	assert(list != NULL);
+
+	list->current = (ocore_list_node *)node;
 }
 
 /* ocore_dlist_new:
@@ -347,7 +346,9 @@ _ocore_dlist_remove(ocore_dlist *list)
 
 int ocore_dlist_remove(ocore_dlist *list)
 {
-	if(!list || !OCORE_LIST(list)->current)
+	assert(list);
+
+	if(!OCORE_LIST(list)->current)
 		return 0;
 
 	/* Que persona mas segura de su codigo no? */
@@ -357,15 +358,14 @@ int ocore_dlist_remove(ocore_dlist *list)
 
 /* ocore_dlist_remove_node(): Vease ocore_list_remove_node(). 
  */
-int ocore_dlist_remove_node(ocore_dlist *list, ocore_opaque_one opq)
+void ocore_dlist_remove_node(ocore_dlist *list, ocore_dlist_node *node)
 {
-	if(!list || !opq)
-		return 0;
+	assert(list != NULL);
+	assert(node != NULL);
 
-	OCORE_LIST(list)->current = (ocore_list_node *)opq;
+	OCORE_LIST(list)->current = (ocore_list_node *)node;
 
 	free(_ocore_dlist_remove(list));
-	return 1;
 }
 
 /* ocore_dlist_insert_as: Permite indicar hacia que lado (next or prev) de current
@@ -379,18 +379,21 @@ void ocore_dlist_insert_as(ocore_dlist *list, int w)
 	if(list)
 		list->insert_as_previous = w;
 }
-/* ocore_dlist_move: Mueve el nodo 'current' de 'src' a 'dst' utilizando ocore_dlist_insert() para ello.
- * Caracteristica que nacio como una necesidad de 'hash.c' antiguo.
+/* ocore_dlist_move: Translada el nodo src->current a dst.
  */
 int ocore_dlist_move(ocore_dlist *src, ocore_dlist *dst)
 {
 	ocore_dlist_node *node;
 
-	if(!src || !dst || !OCORE_LIST(src)->current)
+	assert(src != NULL);
+	assert(dst != NULL);
+
+	if(!OCORE_LIST(src)->current)
 		return 0;
 
 	node = _ocore_dlist_remove(src);
 	_ocore_dlist_insert(dst, node);
+
 	return 1;
 }
 
@@ -400,12 +403,4 @@ void ocore_list_set_free_func(ocore_list *list, ocore_list_free_cb func)
 {
 	if(list)
 		list->free_func = func;
-}
-
-void *ocore_node_get_data(ocore_opaque_one opq)
-{
-	if(!opq)
-		return NULL;
-
-	return ((ocore_list_node *)opq)->data;
 }

@@ -6,7 +6,6 @@
 #define __OCORE_LIST_H_
 
 typedef void (*ocore_list_free_cb)(void *);
-typedef void *ocore_opaque_one;
 
 struct _ocore_list_node
 {
@@ -54,16 +53,15 @@ void *ocore_list_current(ocore_list *list);
 int ocore_list_count(ocore_list *list);
 int ocore_list_remove(ocore_list *list);
 int ocore_list_destroy(ocore_list *list);
-int ocore_list_remove_node(ocore_list *list, ocore_opaque_one opq);
-ocore_opaque_one ocore_list_get_opaque_node(ocore_list *list);
-void ocore_list_set_current(ocore_list *list, ocore_opaque_one opq);
+void ocore_list_remove_node(ocore_list *list, ocore_list_node *);
+ocore_list_node *ocore_list_get_current_ptr(ocore_list *list);
+void ocore_list_set_current(ocore_list *list, ocore_list_node *node);
 ocore_dlist *ocore_dlist_new();
 int ocore_dlist_new_node(ocore_dlist *list, void *data);
 void *ocore_dlist_prev(ocore_dlist *list);
 int ocore_dlist_remove(ocore_dlist *list);
-int ocore_dlist_remove_node(ocore_dlist *list, ocore_opaque_one opq);
+void ocore_dlist_remove_node(ocore_dlist *list, ocore_dlist_node *node);
 void ocore_dlist_insert_as(ocore_dlist *list, int w);
 void ocore_list_set_free_func(ocore_list *list, ocore_list_free_cb func);
-void *ocore_node_get_data(ocore_opaque_one opq);
 
 #endif
