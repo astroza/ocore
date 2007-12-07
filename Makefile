@@ -3,7 +3,7 @@ all:
 	cd OCORE; make;
 clean:
 	cd OCORE; make clean
-install:
+install: all
 	cd OCORE; make install
 	mkdir -p $(INCLUDE)/ocore
 	cp include/*.h $(INCLUDE)/ocore
